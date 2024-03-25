@@ -55,5 +55,7 @@ public class SpringbootBlogAppApiApplication implements CommandLineRunner {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+
+        System.out.println("Swagger Documentation: /swagger-ui/index.html");
 	}
 }
