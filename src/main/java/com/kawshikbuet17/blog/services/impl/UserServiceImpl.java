@@ -1,12 +1,16 @@
 package com.kawshikbuet17.blog.services.impl;
 
+import com.kawshikbuet17.blog.config.AppConstants;
+import com.kawshikbuet17.blog.entities.Role;
 import com.kawshikbuet17.blog.entities.User;
 import com.kawshikbuet17.blog.exceptions.ResourceNotFoundException;
 import com.kawshikbuet17.blog.payloads.UserDto;
+import com.kawshikbuet17.blog.repositories.RoleRepo;
 import com.kawshikbuet17.blog.repositories.UserRepo;
 import com.kawshikbuet17.blog.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +23,27 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.modelMapper.map(userDto, User.class);
+
+        //encode password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        //set roles
+        Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+        user.getRoles().add(role);
+
+        this.userRepo.save(user);
+        return this.modelMapper.map(user, UserDto.class);
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {

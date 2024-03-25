@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth->
                                 auth.requestMatchers("/home/**").authenticated()
-                                .requestMatchers("/api/v1/auth/login").permitAll()
+                                .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET).permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex->ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
