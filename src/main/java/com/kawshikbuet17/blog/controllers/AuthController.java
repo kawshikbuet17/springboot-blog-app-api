@@ -1,5 +1,6 @@
 package com.kawshikbuet17.blog.controllers;
 
+import com.kawshikbuet17.blog.exceptions.ApiException;
 import com.kawshikbuet17.blog.payloads.JwtAuthRequest;
 import com.kawshikbuet17.blog.payloads.JwtAuthResponse;
 import com.kawshikbuet17.blog.security.JwtTokenHelper;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,7 +40,11 @@ public class AuthController {
 
     private void authenticate(String username, String password) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-
+        try{
+            this.authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        }
+        catch (BadCredentialsException e){
+            throw new ApiException("Invalid username or password");
+        }
     }
 }
